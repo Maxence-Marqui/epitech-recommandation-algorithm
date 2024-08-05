@@ -1,0 +1,33 @@
+version: '3'
+services:
+  db:
+    container_name: voltron_db
+    image: postgres
+    restart: always
+    ports:
+      - 8000:5432
+    environment: 
+      POSTGRES_PASSWORD: user
+      POSTGRES_USER: user
+      POSTGRES_DB: Voltron
+  
+  python_worker:
+    container_name: voltron_worker
+    build: 
+      context: ./recommandations
+    environment:
+      DB_PASSWORD: user
+      DB_USER: user
+      DB_PORT: 5432
+      DB_NAME: Voltron
+      DB_HOST: db
+    depends_on:
+      - db
+    
+  adminer:
+    image: adminer
+    restart: always
+    depends_on: 
+      - db
+    ports:
+      - 8080:8080
